@@ -1,4 +1,5 @@
 from src.sql_blocker.utils.sql_utils import get_connection, find_head_blockers, kill_spid
+from src.sql_blocker.utils.logger import log_message
 
 def safe_kill(conn, spid, dbname, app, cfg, hostname=None):
     excluded_dbs = [
@@ -11,20 +12,24 @@ def safe_kill(conn, spid, dbname, app, cfg, hostname=None):
     exempt_hosts = {'zcmchisserver2'}
 
     if hostname and hostname.lower() in exempt_hosts:
-        pass
+        log_message(app, f"Skipping SPID {spid} - Host '{hostname}' is exempt")
+        return
 
     if dbname in excluded_dbs:
-        pass
-
+        log_message(app, f"Skipping SPID {spid} - DB '{dbname}' is excluded")
+        return
     if dry_run:
-        pass
+        log_message(app, f"Dry Run would kill SPID {spid} on DB '{dbname}'")
 
     try:
         kill_spid(conn, spid)
-        pass
+        log_message(app,
+                    f"Killed SPID {spid} on DB '{dbname}'"
+                            f"(Host: {hostname or 'unknown'})"
+                    )
 
     except Exception as e:
-        pass
+        log_message(app, f"Failed to kill SPID {spid}: {e}")
 
 
 def monitor_blockers(app, cfg):
@@ -34,13 +39,15 @@ def monitor_blockers(app, cfg):
     conn = get_connection(conn_str)
 
     if not conn:
-        pass
+        log_message(app, "Database connection failed")
+        return []
 
     try:
         blockers = find_head_blockers(conn)
 
         if not blockers:
-            pass
+            log_message(app, "No head blockers found")
+            return
 
         eligible_blockers = [
             row for row in blockers
@@ -48,7 +55,8 @@ def monitor_blockers(app, cfg):
         ]
 
         if not eligible_blockers:
-            pass
+            log_message(app, "No eligible blockers found")
+            return
 
         for row in eligible_blockers:
             if len(row) >= 5:
@@ -57,13 +65,18 @@ def monitor_blockers(app, cfg):
                 spid, blocked_count, wait_sec, dbname = row
                 host_name = None
 
-            pass
+            log_message(
+                app,
+                f"SPID {spid} blocking {blocked_count} session(s)"
+                        f"for {wait_sec} sec(s) on DB '{dbname}'"
+                        f"(Host: {host_name or 'unknown'})"
+            )
 
 
-        safe_kill(conn, spid, dbname, app, cfg, host_name)
+            safe_kill(conn, spid, dbname, app, cfg, host_name)
 
     except Exception as e:
-        pass
+        log_message(app, f"Failed to kill SPID {spid}: {e}")
 
     finally:
         conn.close()
