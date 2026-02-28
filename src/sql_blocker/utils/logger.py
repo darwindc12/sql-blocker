@@ -25,3 +25,5 @@ def log_message(app, message):
         ))
     else:
         print(timestamp)
+
+
