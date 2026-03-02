@@ -6,4 +6,4 @@ def main():
     root = tk.Tk()
     app = BlockerMonitorApp(root)
     log_message(app, "SQL Blocker Monitor Initiated.")
-    root.mainloop()git
+    root.mainloop()
