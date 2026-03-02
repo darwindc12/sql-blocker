@@ -1,5 +1,5 @@
-from src.sql_blocker.utils.monitor import monitor_blockers
-from src.sql_blocker.utils.config import config
+from src.sql_blocker.monitor import monitor_blockers
+from src.sql_blocker import config
 
 monitor_blockers(None, config)
 

@@ -1,5 +1,5 @@
-from src.sql_blocker.utils.sql_utils import get_connection, find_head_blockers, kill_spid
-from src.sql_blocker.utils.logger import log_message
+from utils.sql_utils import get_connection, find_head_blockers, kill_spid
+from logger import log_message
 
 def safe_kill(conn, spid, dbname, app, cfg, hostname=None):
     excluded_dbs = [

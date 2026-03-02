@@ -1,7 +1,7 @@
 import threading
 from datetime import datetime
-from .monitor import monitor_blockers
-from .logger import log_message
+from src.sql_blocker.monitor import monitor_blockers
+from src.sql_blocker.logger import log_message
 
 
 class Scheduler:

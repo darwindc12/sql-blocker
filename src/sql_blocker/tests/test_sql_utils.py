@@ -6,17 +6,17 @@ conn_str = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=zcmchisserver2;DATABAS
 conn = get_connection(conn_str)
 
 if conn:
-    print("✅ Connection successful!")
+    print("Connection successful!")
 
     blockers = find_head_blockers(conn)
 
     if blockers:
-        print("⚠️ Blockers detected:")
+        print("⚠Blockers detected:")
         for row in blockers:
             print(row)
     else:
-        print("✅ No blockers found.")
+        print("No blockers found.")
 
     conn.close()
 else:
-    print("❌ Connection failed.")
+    print("Connection failed.")
