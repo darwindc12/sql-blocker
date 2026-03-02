@@ -1,6 +1,6 @@
 import tkinter as tk
-from .gui import BlockerMonitorApp
-from .logger import log_message
+from src.sql_blocker.gui import BlockerMonitorApp
+from src.sql_blocker.logger import log_message
 
 def main():
     root = tk.Tk()

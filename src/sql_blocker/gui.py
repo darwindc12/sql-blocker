@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, simpledialog
 
 from src.sql_blocker.config import config, save_config, PASSCODE
-from logs.scheduler import Scheduler
+from src.sql_blocker.scheduler import Scheduler
 
 
 
