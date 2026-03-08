@@ -19,6 +19,10 @@ This tool is designed to help database administrators quickly mitigate sql block
 - GUI-based control panel
 - Logging to file and live GUI console
 
+## Project Architecture
+
+![img.png](img.png)
+
 ## Component Overview
 
 - 'run.py' - Application entry point
