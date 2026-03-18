@@ -60,7 +60,7 @@ class BlockerMonitorApp:
         # Footer
         footer_label = tk.Label(
             self.monitor_tab,
-            text="⚙️ SQL Blocker Monitor\nIMISS",
+            text="⚙️ SQL Blocker Monitor\nIHOMP",
             font=("Segoe UI", 9, "italic"),
             fg="#AAAAAA",
             justify="center",
@@ -129,6 +129,7 @@ class BlockerMonitorApp:
         self.kill_entry.insert(0, config["monitor"]["kill_threshold"])
 
         # Save Button
+
         tk.Button(
             f,
             text="💾 Save Config",
@@ -136,6 +137,14 @@ class BlockerMonitorApp:
             bg="#2196F3",
             fg="white"
         ).grid(row=5, column=1, sticky="w", pady=15)
+
+        tk.Button(
+            f,
+            text="Test Connection",
+            command=self.test_connection_gui,
+            bg="#4CAF50",
+            fg="white"
+        ).grid(row=6, column=1, sticky="w", pady=15)
 
     def save_config_gui(self):
         new_values = {
@@ -149,3 +158,18 @@ class BlockerMonitorApp:
 
         save_config(new_values)
         messagebox.showinfo("Saved", "Configuration saved successfully.")
+
+    def test_connection_gui(self):
+
+        conn_str = self.conn_str_entry.get().strip()
+        if not conn_str:
+            messagebox.showerror("Connection Error", "Please enter a connection string.")
+            return
+
+        from src.sql_blocker.tests.test_sql_utils import get_connection
+        conn = get_connection(conn_str)
+        if conn:
+            messagebox.showinfo("Connection Successful", "Connection successful.")
+            conn.close()
+        else:
+            messagebox.showerror("Connection Error", "Please enter a valid connection string.")
