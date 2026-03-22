@@ -128,23 +128,53 @@ class BlockerMonitorApp:
         self.kill_entry.grid(row=1, column=1, sticky="w")
         self.kill_entry.insert(0, config["monitor"]["kill_threshold"])
 
+        # Excluded DB
+        tk.Label(f, text="Excluded DBs:").grid(row=2, column=0, sticky="e")
+        self.excl_entry = tk.Entry(f, width=40)
+        self.excl_entry.grid(row=2, column=1, sticky="w")
+        self.excl_entry.insert(0, config["monitor"]["excluded_dbs"])
+
+        # Dry Run
+        tk.Label(f, text="Dry Run (true/false)").grid(row=3, column=0, sticky="e")
+        self.dry_entry = tk.Entry(f, width=10)
+        self.dry_entry.grid(row=3, column=1, sticky="w")
+        self.dry_entry.insert(0, config["monitor"]["dry_run"])
+
+        # Start Time
+        tk.Label(f, text="Start Time (HH:MM):").grid(row=4, column=0, sticky="e")
+        self.start_entry = tk.Entry(f, width=10)
+        self.start_entry.grid(row=4, column=1, sticky="w")
+        self.start_entry.insert(0, config["schedule"]["start_time"])
+
+        # Stop Time
+        tk.Label(f, text="Stop Time (HH:MM):").grid(row=5, column=0, sticky="e")
+        self.stop_entry = tk.Entry(f, width=10)
+        self.stop_entry.grid(row=5, column=1 , sticky="w")
+        self.stop_entry.insert(0, config["schedule"]["stop_time"])
+
+
         # Save Button
 
-        tk.Button(
-            f,
-            text="💾 Save Config",
-            command=self.save_config_gui,
-            bg="#2196F3",
-            fg="white"
-        ).grid(row=5, column=1, sticky="w", pady=15)
+        button_frame = tk.Frame(f)
+        button_frame.grid(row=6, column=1, sticky="w", pady=15)
 
         tk.Button(
-            f,
-            text="Test Connection",
+            button_frame, text="💾 Save Config",
+            command=self.save_config_gui,
+            bg="#2196F3", fg="white"
+        ).pack(side=tk.LEFT, padx=5)
+
+        tk.Button(
+            button_frame, text="🧪 Test Connection",
             command=self.test_connection_gui,
-            bg="#4CAF50",
-            fg="white"
-        ).grid(row=6, column=1, sticky="w", pady=15)
+            bg="#4CAF50", fg="white"
+        ).pack(side=tk.LEFT, padx=5)
+
+        tk.Button(
+            button_frame, text="🔒 Lock Configuration",
+            command=self.lock_config_tab,
+            bg="#9C27B0", fg="white"
+        ).pack(side=tk.LEFT, padx=5)
 
     def save_config_gui(self):
         new_values = {
