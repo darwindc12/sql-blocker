@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox, simpledialog
-
+from .auth import AuthService
 from src.sql_blocker.config import config, save_config, PASSCODE
 from src.sql_blocker.scheduler import Scheduler
+from src.sql_blocker.logger import log_message
 
 
 
@@ -26,6 +27,13 @@ class BlockerMonitorApp:
         self.tabs.pack(expand=1, fill="both")
 
         self.tabs.bind("<<NotebookTabChanged>>", self.on_tab_change)
+
+        # Auth Initialization
+
+        self.auth = AuthService("http://your-django-api-url")
+        self.current_user = None
+
+
 
         # Monitor Tab
 
@@ -80,6 +88,10 @@ class BlockerMonitorApp:
 
         self.config_frame = None
 
+        # Call login at startup
+
+        self.root.after(100, self.show_login)
+
     # Scheduler Controls
 
     def start_monitor(self):
@@ -87,6 +99,16 @@ class BlockerMonitorApp:
 
     def stop_monitor(self):
         self.scheduler.stop()
+
+    # Authentication / Roles
+
+    def apply_role_permissions(self):
+        is_admin = self.auth.is_admin()
+
+        if not is_admin:
+            self.tabs.tab(self.config_tab, state="disabled")
+        else:
+            self.tabs.tab(self.config_tab, state="normal")
 
     # Config Tab Handling
 
@@ -203,3 +225,33 @@ class BlockerMonitorApp:
             conn.close()
         else:
             messagebox.showerror("Connection Error", "Please enter a valid connection string.")
+
+    def show_login(self):
+        login_win = tk.Toplevel(self.root)
+        login_win.title("Login")
+        login_win.geometry("300x200")
+        login_win.grab_set()
+
+        tk.Label(login_win, text="Username").pack(pady=5)
+        username_entry = tk.Entry(login_win)
+        username_entry.pack()
+
+        tk.Label(login_win, text="Password").pack(pady=5)
+        password_entry = tk.Entry(login_win, show="*")
+        password_entry.pack()
+
+        def do_login():
+            username = username_entry.get()
+            password = password_entry.get()
+
+            success, message = self.auth.login(username, password)
+
+            if success:
+                self.current_user = self.auth.user
+                login_win.destroy()
+                self.apply_role_permissions()
+                log_message(self, f"Logged in as {username}")
+            else:
+                messagebox.showerror("Login Failed", message)
+
+        tk.Button(login_win, text="Login", command=do_login).pack(pady=10)
