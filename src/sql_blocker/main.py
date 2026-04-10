@@ -7,7 +7,6 @@ def main():
     root.withdraw()
 
     app = BlockerMonitorApp(root)
-    app.show_login()
 
     log_message(app, "SQL Blocker Monitor Initiated.")
     root.mainloop()

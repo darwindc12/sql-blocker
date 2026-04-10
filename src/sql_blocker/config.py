@@ -13,8 +13,6 @@ config.read(CONFIG_PATH)
 print("Loading config from:", CONFIG_PATH)
 print("Sections found:", config.sections())
 
-PASSCODE = "2021112551"
-
 def save_config(new_values):
     config["database"]["conn_str"] = new_values['conn_str']
     config["monitor"]["kill_threshold"] = str(new_values['kill_threshold'])

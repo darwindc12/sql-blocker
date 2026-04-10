@@ -14,7 +14,7 @@ class AuthService:
     def login(self, username, password):
         try:
             response = requests.post(
-                f"{self.base_url}/login/",
+                f"http://localhost:8000/api/auth/login/",
                 json={
                     "username": username,
                     "password": password
@@ -43,7 +43,7 @@ class AuthService:
     def get_user_info(self):
         try:
             response = requests.get(
-                f"{self.base_url}/me/",
+                f"http://localhost:8000/api/auth/me/",
                 headers={
                     "Authorization": f"Bearer {self.access_token}"
                 },
@@ -86,7 +86,7 @@ class AuthService:
 
         try:
             response = requests.post(
-                f"{self.base_url}/refresh/",
+                f"http://localhost:8000/api/auth/refresh/",
                 json={"refresh": self.refresh_token},
                 timeout=5
             )
