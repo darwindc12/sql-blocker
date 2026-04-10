@@ -99,12 +99,19 @@ class BlockerMonitorApp:
     # Authentication / Roles
 
     def apply_role_permissions(self):
-        is_admin = self.auth.is_admin()
+        role = self.auth.get_role()
 
-        if not is_admin:
-            self.tabs.tab(self.config_tab, state="disabled")
-        else:
+        if role in ["admin", "super_admin"]:
+            # Full access
             self.tabs.tab(self.config_tab, state="normal")
+
+        elif role == "user":
+            # Limited access
+            self.tabs.tab(self.config_tab, state="disabled")
+
+        elif role == "service":
+            # Optional: hide GUI features or disable everything
+            self.tabs.tab(self.config_tab, state="disabled")
 
     # Config Tab Handling
 
