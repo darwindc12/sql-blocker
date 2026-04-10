@@ -4,6 +4,10 @@ from src.sql_blocker.logger import log_message
 
 def main():
     root = tk.Tk()
+    root.withdraw()
+
     app = BlockerMonitorApp(root)
+    app.show_login()
+
     log_message(app, "SQL Blocker Monitor Initiated.")
     root.mainloop()
