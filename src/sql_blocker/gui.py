@@ -88,10 +88,6 @@ class BlockerMonitorApp:
 
         self.config_frame = None
 
-        # Call login at startup
-
-        self.root.after(100, self.show_login)
-
     # Scheduler Controls
 
     def start_monitor(self):
@@ -227,10 +223,11 @@ class BlockerMonitorApp:
             messagebox.showerror("Connection Error", "Please enter a valid connection string.")
 
     def show_login(self):
-        login_win = tk.Toplevel(self.root)
+        login_win = tk.Toplevel()
         login_win.title("Login")
         login_win.geometry("300x200")
         login_win.grab_set()
+        login_win.protocol("WM_DELETE_WINDOW", self.root.destroy)  # exit app if closed
 
         tk.Label(login_win, text="Username").pack(pady=5)
         username_entry = tk.Entry(login_win)
@@ -249,8 +246,12 @@ class BlockerMonitorApp:
             if success:
                 self.current_user = self.auth.user
                 login_win.destroy()
+
+                # 👇 SHOW MAIN WINDOW AFTER LOGIN
+                self.root.deiconify()
+
                 self.apply_role_permissions()
-                log_message(self, f"Logged in as {username}")
+
             else:
                 messagebox.showerror("Login Failed", message)
 
